@@ -4,6 +4,14 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.view-title {
+  font-weight: 600;
+}
+
 .global {
   display: flex;
 }
@@ -16,7 +24,7 @@ html {
 .sidebar-container {
   color: white;
   width: 60px;
-  height: calc(100vh - 59px);
+  height: 100vh;
   overflow-y: scroll;
   overflow-x: hidden;
 }
@@ -59,6 +67,7 @@ html {
 @media screen and (max-width: 767px) {
   .sidebar-container {
     display: none;
+    height: 100%;
   }
 
   .small-device-icon {

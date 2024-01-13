@@ -52,8 +52,7 @@ export const ClientsModal = () => {
   }
 
   const onSubmit = (data) => {
-    const { rtn, fullName, address } = data
-    if (startSavingClient({ rtn, fullName, address })) closeModalAndClean()
+    if (startSavingClient(data)) closeModalAndClean()
   }
 
   return (

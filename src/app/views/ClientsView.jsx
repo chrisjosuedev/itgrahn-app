@@ -1,8 +1,8 @@
+import { useEffect, useMemo } from 'react'
 import { IconPlus } from '@tabler/icons-react'
 import { useUiStore } from '../../hooks/useUiStore'
 import { ClientsModal } from '../components/clients/ClientsModal'
 import { useClientStore } from '../../hooks/useClientStore'
-import { useEffect, useMemo } from 'react'
 import { Message } from '../components/Message'
 import { ClientsTable } from '../components/clients/ClientsTable'
 import { SpinnerLoader } from '../components/SpinnerLoader'
@@ -15,7 +15,7 @@ export const ClientsView = () => {
     startLoadingClients()
   }, [])
 
-  // Render Messages or User Reviews
+  // Render Message or Clients
   const renderClients = useMemo(() => {
     if (clients.length === 0)
       return <Message message={'No parece haber nada por aquí... 😔'} type='dark' />
@@ -35,10 +35,10 @@ export const ClientsView = () => {
     <div className='container mt-4'>
       <div className='row'>
         <div className='col-md-12'>
-          <h1>Clientes</h1>
+          <h1 className='view-title'>CLIENTES</h1>
           <hr />
           <button onClick={onAddNewClient} className='btn btn-primary mt-4'>
-            <IconPlus color='white' /> AGREGAR
+            <IconPlus color='white' /> NUEVO
           </button>
         </div>
         <div className='col-md-12 mt-4'>

@@ -20,6 +20,17 @@ export const clientStore = createSlice({
       state.clients.push(payload.clientSaved)
       state.message = payload.message
     },
+    onUpdateClient: (state, { payload }) => {
+      state.clients = state.clients.map((client) => {
+        if (client.id === payload.clientUpdated.id) return payload.clientUpdated
+        return client
+      })
+      state.message = payload.message
+    },
+    onDeleteClient: (state, { payload }) => {
+      state.clients = state.clients.filter((client) => client.id !== state.activeClient.id)
+      state.message = payload
+    },
     onSetActiveClient: (state, { payload }) => {
       state.activeClient = payload
     },
@@ -36,6 +47,8 @@ export const {
   onAddNewClient,
   onSetActiveClient,
   onSetClientMessage,
+  onDeleteClient,
   onClearClientMessage,
   onLoadClients,
+  onUpdateClient,
 } = clientStore.actions

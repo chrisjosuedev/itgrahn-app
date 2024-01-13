@@ -2,14 +2,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   onAddNewClient,
   onClearClientMessage,
+  onDeleteClient,
   onLoadClients,
   onSetActiveClient,
   onSetClientMessage,
+  onUpdateClient,
 } from '../store/clients/clientStore'
-import { findAllClients, saveClient } from '../repository/clientsStorage'
+import {
+  deleteClient,
+  findAllClients,
+  findById,
+  saveClient,
+  updateClient,
+} from '../repository/clientsStorage'
 
 export const useClientStore = () => {
-  const { activeClient, clients, isLoadingClients, message } = useSelector((state) => state.client)
+  const { activeClient, clients, isLoadingClients, message } = useSelector(
+    (state) => state.client
+  )
   const dispatch = useDispatch()
 
   // Load Clients
@@ -23,12 +33,27 @@ export const useClientStore = () => {
     dispatch(onSetActiveClient(client))
   }
 
+  // Finding and Set Acive Client
+  const startFindingClient = (id) => {
+    const clientFound = findById(id)
+    dispatch(onSetActiveClient(clientFound))
+  }
+
   // Start Saving Client
   const startSavingClient = (client) => {
     try {
-      if (client.uuid) {
-        //update...
-        return
+      if (client.id) {
+        const clientUpdated = updateClient(client)
+        dispatch(
+          onUpdateClient({
+            clientUpdated,
+            message: `Cliente: ${clientUpdated.fullName}, actualizado con éxito.`,
+          })
+        )
+        setTimeout(() => {
+          dispatch(onClearClientMessage())
+        }, 3000)
+        return true
       }
       const clientSaved = saveClient(client)
       dispatch(
@@ -49,6 +74,15 @@ export const useClientStore = () => {
     }
   }
 
+  // Start Deleting Client
+  const startDeletingClient = (id) => {
+    deleteClient(id)
+    dispatch(onDeleteClient('Cliente Eliminado con éxito.'))
+    setTimeout(() => {
+      dispatch(onClearClientMessage())
+    }, 3000)
+  }
+
   return {
     // props
     activeClient,
@@ -60,5 +94,7 @@ export const useClientStore = () => {
     startLoadingClients,
     startSetClient,
     startSavingClient,
+    startFindingClient,
+    startDeletingClient,
   }
 }
