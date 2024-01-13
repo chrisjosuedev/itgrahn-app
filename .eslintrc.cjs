@@ -13,7 +13,9 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     'no-unused-vars': 'off',
-    'jsx-quotes': ['error', 'prefer-single'],
+    'react/prop-types': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'off',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: false }],
   },
 }
