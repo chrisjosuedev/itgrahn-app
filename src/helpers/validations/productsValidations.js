@@ -21,6 +21,10 @@ export const stockValidations = {
   min: {
     value: 0,
     message: 'Stock debe ser mayor o igual cero.',
+  },
+  pattern: {
+    value: /^[0-9]*$/,
+    message: 'Ingrese stock válido.',
   }
 }
 
@@ -35,6 +39,6 @@ export const priceValidations = {
   },
   pattern: {
     value: /^\d+(\.\d{1,2})?$/,
-    message: 'Máximo de 2 cifras decimales permitidas, separados por punto.',
+    message: 'Ingrese cantidad de precio válida.',
   },
 }

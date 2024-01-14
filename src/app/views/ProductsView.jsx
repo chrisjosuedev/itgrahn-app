@@ -9,7 +9,8 @@ import { ProductsTable } from '../components/products/ProductsTable'
 
 export const ProductsView = () => {
   const { startOpenModal } = useUiStore()
-  const { products, startLoadingProducts, isLoadingProducts } = useProductStore()
+  const { products, startLoadingProducts, isLoadingProducts, startSetProduct } =
+    useProductStore()
 
   useEffect(() => {
     startLoadingProducts()
@@ -23,7 +24,11 @@ export const ProductsView = () => {
   }, [products])
 
   const onAddNewProduct = () => {
-    // start setting Product
+    startSetProduct({
+      productName: '',
+      price: '',
+      stock: '',
+    })
     startOpenModal()
   }
 

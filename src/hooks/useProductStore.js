@@ -1,6 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { findAllProducts } from "../repository/productsStore"
-import { onLoadProducts } from "../store/products/productStore"
+import {
+  deleteProduct,
+  findAllProducts,
+  findByProductId,
+  saveProduct,
+  updateProduct,
+} from '../repository/productsStorage'
+import {
+  onAddNewProduct,
+  onClearProductMessage,
+  onLoadProducts,
+  onSetActiveProduct,
+  onSetProductMessage,
+  onUpdateProduct,
+} from '../store/products/productStore'
+import { onDeleteClient } from '../store/clients/clientStore'
 
 export const useProductStore = () => {
   const { activeProduct, products, isLoadingProducts, message } = useSelector(
@@ -14,6 +28,64 @@ export const useProductStore = () => {
     dispatch(onLoadProducts(allProducts))
   }
 
+  // Start Setting Product
+  const startSetProduct = (product) => {
+    dispatch(onSetActiveProduct(product))
+  }
+
+  // Start Finding Product
+  const startFindingProduct = (id) => {
+    const productFound = findByProductId(id)
+    dispatch(onSetActiveProduct(productFound))
+  }
+
+  // Start Saving Product
+  const startSavingProduct = (product) => {
+    try {
+      if (product.id) {
+        // Update
+        const productUpdated = updateProduct(product)
+        dispatch(
+          onUpdateProduct({
+            productUpdated,
+            message: `Producto: ${productUpdated.productName}, actualizado con éxito.`,
+          })
+        )
+        setTimeout(() => {
+          dispatch(onClearProductMessage())
+        }, 3000)
+        return true
+      }
+
+      // Save
+      const productSaved = saveProduct(product)
+      dispatch(
+        onAddNewProduct({
+          productSaved,
+          message: `Producto: ${productSaved.productName}, guardado con éxito.`,
+        })
+      )
+      setTimeout(() => {
+        dispatch(onClearProductMessage())
+      }, 3000)
+      return true
+    } catch (error) {
+      dispatch(onSetProductMessage(error))
+      setTimeout(() => {
+        dispatch(onClearProductMessage())
+      }, 3000)
+    }
+  }
+
+  // Start Deleting Product
+  const startDeletingProduct = (id) => {
+    deleteProduct(id)
+    dispatch(onDeleteClient('Producto Eliminado con éxito.'))
+    setTimeout(() => {
+      dispatch(onClearProductMessage())
+    }, 3000)
+  }
+
   return {
     // props
     activeProduct,
@@ -22,6 +94,10 @@ export const useProductStore = () => {
     message,
 
     // methods
-    startLoadingProducts
+    startLoadingProducts,
+    startSetProduct,
+    startSavingProduct,
+    startFindingProduct,
+    startDeletingProduct,
   }
 }

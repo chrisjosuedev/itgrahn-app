@@ -1,5 +1,6 @@
-import { v4 as uuidv4 } from 'uuid'
+import ShortUniqueId from 'short-unique-id'
 
 export const generateId = () => {
-  return uuidv4()
+  const uid = new ShortUniqueId({ length: 5 })
+  return uid.rnd()
 }

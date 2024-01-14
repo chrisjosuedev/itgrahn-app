@@ -8,7 +8,12 @@ import { useForm } from 'react-hook-form'
 import { customStyles } from '../../../helpers/modalStyles'
 
 import { alertSuccess } from '../../../helpers/SweetAlertProps'
-import { priceValidations, productNameValidations, stockValidations } from "../../../helpers/validations/productsValidations"
+import {
+  priceValidations,
+  productNameValidations,
+  stockValidations,
+} from '../../../helpers/validations/productsValidations'
+import { useProductStore } from '../../../hooks/useProductStore'
 
 Modal.setAppElement('#root')
 
@@ -20,6 +25,7 @@ const init = {
 
 export const ProductsModal = () => {
   const { isOpenModal, startCloseModal } = useUiStore()
+  const { activeProduct, message, startSavingProduct } = useProductStore()
 
   const {
     register,
@@ -29,16 +35,16 @@ export const ProductsModal = () => {
     formState: { errors },
   } = useForm({ defaultValues: init })
 
-  // useEffect(() => {
-  //   if (activeProduct !== null) reset(activeProduct)
-  // }, [activeProduct])
+  useEffect(() => {
+    if (activeProduct !== null) reset(activeProduct)
+  }, [activeProduct])
 
-  // useEffect(() => {
-  //   if (message !== undefined) {
-  //     const successInfo = alertSuccess(message, 'info')
-  //     Swal.fire(successInfo)
-  //   }
-  // }, [message])
+  useEffect(() => {
+    if (message !== undefined) {
+      const successInfo = alertSuccess(message, 'info')
+      Swal.fire(successInfo)
+    }
+  }, [message])
 
   const closeModalAndClean = () => {
     reset()
@@ -47,8 +53,14 @@ export const ProductsModal = () => {
   }
 
   const onSubmit = (data) => {
-    console.log(data)
-    // if (startSavingProduct(data)) closeModalAndClean()
+    const product = {
+      ...data,
+      productName: data.productName.trim(),
+      price: parseFloat(data.price),
+      stock: Number(data.stock),
+    }
+
+    if (startSavingProduct(product)) closeModalAndClean()
   }
 
   return (
