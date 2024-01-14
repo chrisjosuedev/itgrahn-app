@@ -7,7 +7,7 @@ export const AppLayout = ({ children }) => {
       <Navbar />
       <div className='global'>
         <Sidebar />
-        <div className='container-fluid'>{children}</div>
+        <div className='container-fluid main'>{children}</div>
       </div>
     </>
   )

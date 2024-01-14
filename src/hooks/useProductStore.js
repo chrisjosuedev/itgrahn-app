@@ -9,6 +9,7 @@ import {
 import {
   onAddNewProduct,
   onClearProductMessage,
+  onDeleteProduct,
   onLoadProducts,
   onSetActiveProduct,
   onSetProductMessage,
@@ -80,7 +81,7 @@ export const useProductStore = () => {
   // Start Deleting Product
   const startDeletingProduct = (id) => {
     deleteProduct(id)
-    dispatch(onDeleteClient('Producto Eliminado con éxito.'))
+    dispatch(onDeleteProduct('Producto Eliminado con éxito.'))
     setTimeout(() => {
       dispatch(onClearProductMessage())
     }, 3000)

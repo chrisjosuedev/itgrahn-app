@@ -12,15 +12,26 @@ body {
   font-weight: 600;
 }
 
-.global {
-  display: flex;
-}
-
 .icon:hover {
   opacity: 50%;
 }
 
+.global {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  overflow: auto;
+}
+
+
 /** Sidebar **/
+.sidebar_content {
+  overflow-y: auto;
+}
+
 .sidebar-container {
   color: white;
   width: 60px;
@@ -59,10 +70,6 @@ body {
 }
 
 @media screen and (min-width: 768px) {
-  .sidebar-container {
-    height: 100%;
-  }
-
   .small-device-icon {
     display: none;
   }
@@ -71,7 +78,6 @@ body {
 @media screen and (max-width: 767px) {
   .sidebar-container {
     display: none;
-    height: 100%;
   }
 
   .small-device-icon {

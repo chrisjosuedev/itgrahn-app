@@ -28,9 +28,7 @@ export const productStore = createSlice({
       state.message = payload.message
     },
     onDeleteProduct: (state, { payload }) => {
-      state.products = state.products.filter(
-        (product) => product.id !== state.activeProduct.id
-      )
+      state.products = state.products.filter((product) => product.id !== state.activeProduct.id)
       state.message = payload
     },
     onSetActiveProduct: (state, { payload }) => {
@@ -49,6 +47,7 @@ export const {
   onLoadProducts,
   onSetActiveProduct,
   onAddNewProduct,
+  onDeleteProduct,
   onSetProductMessage,
   onClearProductMessage,
   onUpdateProduct,
