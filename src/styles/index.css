@@ -9,7 +9,7 @@ body {
 }
 
 .view-title {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .icon:hover {
@@ -26,6 +26,14 @@ body {
   overflow: auto;
 }
 
+.totals-container {
+  margin-top: 50px;
+  margin-right: 5%;
+}
+
+.totals {
+  font-weight: 700;
+}
 
 /** Sidebar **/
 .sidebar_content {
@@ -69,6 +77,10 @@ body {
   padding: 10px;
 }
 
+.amount-small {
+  width: 50%;
+}
+
 @media screen and (min-width: 768px) {
   .small-device-icon {
     display: none;
@@ -83,5 +95,9 @@ body {
   .small-device-icon {
     display: block;
     cursor: pointer;
+  }
+
+  .amount-small {
+    width: 100%;
   }
 }

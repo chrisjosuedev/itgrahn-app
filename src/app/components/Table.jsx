@@ -54,40 +54,42 @@ export const Table = ({ data, columns, filterBy }) => {
           />
         </div>
       </div>
-      <table className='table table-striped w-100'>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  onClick={header.column.getToggleSortingHandler()}
-                  scope='col'
-                  key={header.id}
-                >
-                  <b> {header.column.columnDef.header} </b>
-                  {
+      <div className='table-responsive'>
+        <table className='table table-striped w-100'>
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    onClick={header.column.getToggleSortingHandler()}
+                    scope='col'
+                    key={header.id}
+                  >
+                    <b> {header.column.columnDef.header} </b>
                     {
-                      asc: <IconCaretUpFilled color='black' />,
-                      desc: <IconCaretDownFilled color='black' />,
-                    }[header.column.getIsSorted() ?? null]
-                  }
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell, index) => (
-                <td key={index}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                      {
+                        asc: <IconCaretUpFilled color='black' />,
+                        desc: <IconCaretDownFilled color='black' />,
+                      }[header.column.getIsSorted() ?? null]
+                    }
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell, index) => (
+                  <td key={index}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div>
         <ul className='pagination justify-content-center'>
           <li className='page-item text-primary'>
