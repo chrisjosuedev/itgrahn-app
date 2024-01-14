@@ -1,3 +1,4 @@
+import Select, { createFilter } from 'react-select'
 import { IconRestore } from '@tabler/icons-react'
 import {
   IconAlignCenter,
@@ -5,10 +6,69 @@ import {
   IconPrinter,
   IconShoppingCartOff,
 } from '@tabler/icons-react'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useProductStore } from '../../hooks/useProductStore'
+import { useClientStore } from '../../hooks/useClientStore'
 
 export const InvoicesView = () => {
   const [isGeneric, setIsGeneric] = useState(true)
+
+  const { products, startLoadingProducts } = useProductStore()
+  const { clients, startLoadingClients } = useClientStore()
+
+  const [selectedProduct, setSelectedProduct] = useState('')
+  const [selectedClient, setSelectedClient] = useState('')
+
+  // Product Select State
+  const handleProductSelect = (e) => {
+    setSelectedProduct(e.value)
+  }
+
+  // Product Select State
+  const handleClientSelect = (e) => {
+    setSelectedClient(e.value)
+  }
+
+  // Load Products
+  useEffect(() => {
+    startLoadingProducts()
+  }, [])
+
+  // Load Products
+  useEffect(() => {
+    startLoadingClients()
+  }, [])
+
+  // Reformat Products to Select
+  const allProducts = useMemo(() => {
+    return products.map((prod) => {
+      return {
+        value: prod.id,
+        label: prod.productName,
+      }
+    })
+  }, [products, selectedProduct])
+
+  // Reformat Clients to Select
+  const allClients = useMemo(() => {
+    return clients.map((client) => {
+      return {
+        value: client.rtn,
+        label: client.fullName,
+      }
+    })
+  }, [clients, selectedClient])
+
+  // Filtering Data in Select
+  const filterFactory = (option, inputValue, data) => {
+    const { label, value } = option
+    const otherKey = data.filter(
+      (opt) =>
+        (opt.label === label && opt.value.includes(inputValue)) ||
+        opt.label.includes(inputValue)
+    )
+    return value.includes(inputValue) || otherKey.length > 0
+  }
 
   return (
     <div className='ml-2 mt-4'>
@@ -45,13 +105,18 @@ export const InvoicesView = () => {
                   <label htmlFor='customer' className='form-label'>
                     <b>Cliente: </b>
                   </label>
-                  <input
-                    type='text'
-                    className={`form-control`}
-                    id='customer'
-                    placeholder='John Doe'
-                    autoFocus
+                  <Select
+                    className='select'
+                    options={allClients}
+                    onChange={handleClientSelect}
+                    value={allClients.filter((option) => {
+                      return option.value === selectedClient
+                    })}
+                    filterOption={createFilter((...props) => filterFactory(props, allClients))}
+                    label='Seleccionar...'
+                    placeholder='Buscar cliente...'
                   />
+                  <p>{selectedClient && <span>{selectedClient}</span>}</p>
                 </div>
                 <div className='mb-4'>
                   <label htmlFor='payment' className='form-label'>
@@ -64,7 +129,6 @@ export const InvoicesView = () => {
                       id='cash'
                       name='payment_type'
                       className='custom-control-input'
-                      checked
                     />
                     <label className='custom-control-label' htmlFor='cash'>
                       Efectivo
@@ -86,12 +150,19 @@ export const InvoicesView = () => {
                   <label htmlFor='products' className='form-label'>
                     <b>Agregar Productos: </b>
                   </label>
-                  <input
-                    type='text'
-                    className='form-control'
-                    id='products'
-                    placeholder='Producto, Código...'
+                  <Select
+                    options={allProducts}
+                    onChange={handleProductSelect}
+                    value={allProducts.filter((option) => {
+                      return option.value === selectedProduct
+                    })}
+                    filterOption={createFilter((...props) =>
+                      filterFactory(props, allProducts)
+                    )}
+                    label='Seleccionar...'
+                    placeholder='Buscar producto...'
                   />
+                  <p>{selectedProduct !== 'none' && <span>{selectedProduct}</span>}</p>
                 </div>
               </form>
             </div>
