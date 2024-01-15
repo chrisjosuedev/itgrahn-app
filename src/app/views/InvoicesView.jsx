@@ -8,7 +8,7 @@ import {
   IconPrinter,
   IconShoppingCartOff,
 } from '@tabler/icons-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useClientStore } from '../../hooks/useClientStore'
 import { Message } from '../components/Message'
 import { useInvoiceStore } from '../../hooks/useInvoiceStore'
@@ -25,6 +25,7 @@ export const InvoicesView = () => {
     register,
     setError,
     clearErrors,
+    handleSubmit,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -39,14 +40,22 @@ export const InvoicesView = () => {
 
   const { products, startLoadingProducts } = useProductStore()
   const { clients, startLoadingClients } = useClientStore()
-  const { cart, startAddingToCart, startUpdatingItemInCart, startDeletingItemInCart } =
-    useInvoiceStore()
+  const {
+    cart,
+    startAddingToCart,
+    startUpdatingItemInCart,
+    startDeletingItemInCart,
+    startAddingInvoice,
+    startRemoveCart,
+  } = useInvoiceStore()
 
-  const [selectedProduct, setSelecteditem] = useState('')
+  const [selectedProduct, setSelectedProduct] = useState('')
   const [selectedClient, setSelectedClient] = useState('')
   const [isGeneric, setIsGeneric] = useState(true)
   const [msgAlert, setMsgAlert] = useState(false)
-  const [paymentSelected, setPaymenteSelected] = useState('cash')
+  const [paymentSelected, setPaymentSelected] = useState('cash')
+
+  const genericRef = useRef(null)
 
   // Load items
   useEffect(() => {
@@ -65,7 +74,7 @@ export const InvoicesView = () => {
 
   // Product Select State
   const handleProductSelect = ({ value: id }) => {
-    setSelecteditem(id)
+    setSelectedProduct(id)
     const itemSelected = products.find((p) => p.id === id)
     if (itemSelected.stock === 0) {
       const successInfo = alertSuccess('No hay stock disponible.', 'info')
@@ -98,14 +107,14 @@ export const InvoicesView = () => {
       Swal.fire(successInfo)
       return
     }
-    // set active
+    // Update Item In Cart
     startUpdatingItemInCart(id, value)
     clearErrors()
   }
 
   // Handle Payment Change
   const handlePaymentChange = (e) => {
-    setPaymenteSelected(e.target.value)
+    setPaymentSelected(e.target.value)
   }
 
   // Handle Checkbox
@@ -114,14 +123,43 @@ export const InvoicesView = () => {
     if (!isGeneric) setSelectedClient('')
   }
 
+  // Clean State
+  const onCleanInvoice = () => {
+    // Change to Generic
+    if (!isGeneric) genericRef.current.checked = false
+
+    setSelectedClient('')
+    setSelectedProduct('')
+    setIsGeneric(true)
+    setMsgAlert(false)
+    setPaymentSelected('cash')
+    startRemoveCart()
+  }
+
   // Handle Invoice Process
-  const onHandleInvoice = () => {
-    console.log('print...', paymentSelected, isGeneric)
-    if (!selectedClient) {
+  const onHandleInvoice = (data) => {
+    const { paymentType } = data
+
+    // Check if Generic Invoice
+    if (!isGeneric && !selectedClient) {
       setMsgAlert(true)
       return
     }
     setMsgAlert(false)
+
+    const invoice = {
+      payment: paymentType === 'cash' ? true : false,
+      date: new Date().getTime(),
+      clientId: selectedClient,
+      detail: cart,
+    }
+
+    if (startAddingInvoice(invoice)) {
+      // Clean State
+      onCleanInvoice()
+      const successInfo = alertSuccess('Factura generada exitosamente', 'success')
+      Swal.fire(successInfo)
+    }
   }
 
   // Reformat products to Select
@@ -172,194 +210,201 @@ export const InvoicesView = () => {
           <hr />
         </div>
       </div>
-      <div className='row'>
-        <div className='col-md-4 mb-2'>
-          <div className='card'>
-            <div className='card-header'>
-              <strong>
-                <IconAlignCenter color='black' /> General
-              </strong>
-            </div>
-            <div className='card-body'>
-              <div className='mb-4'>
-                <div className='custom-control custom-checkbox'>
-                  <input
-                    onChange={handleCheckGeneric}
-                    type='checkbox'
-                    className='custom-control-input'
-                    id='customCheck1'
-                  />
-                  <label className='custom-control-label' htmlFor='customCheck1'>
-                    Factura Completa
-                  </label>
-                </div>
+      <form onSubmit={handleSubmit(onHandleInvoice)} noValidate>
+        <div className='row'>
+          <div className='col-md-4 mb-2'>
+            <div className='card'>
+              <div className='card-header'>
+                <strong>
+                  <IconAlignCenter color='black' /> General
+                </strong>
               </div>
-              <div className={`mb-4 ${isGeneric ? 'd-none' : ''}`}>
-                <label htmlFor='customer' className='form-label'>
-                  <b>Cliente: </b>
-                </label>
-                <Select
-                  className='select'
-                  options={allClients}
-                  onChange={handleClientSelect}
-                  value={allClients.filter((option) => {
-                    return option.value === selectedClient
-                  })}
-                  filterOption={createFilter((...props) => filterFactory(props, allClients))}
-                  label='Seleccionar...'
-                  placeholder='Buscar cliente...'
-                />
-                <div className={`text-danger ${msgAlert ? '' : 'd-none'}`}>
-                  <small>Cliente es requerido</small>
-                </div>
-              </div>
-              <div className='mb-4'>
-                <label htmlFor='payment' className='form-label'>
-                  <b>Pago: </b>
-                </label>
-                <br />
-                <div className='custom-control custom-radio custom-control-inline'>
-                  <input
-                    type='radio'
-                    id='cash'
-                    name='payment_type'
-                    value='cash'
-                    checked={paymentSelected === 'cash'}
-                    onChange={handlePaymentChange}
-                    className='custom-control-input'
-                  />
-                  <label className='custom-control-label' htmlFor='cash'>
-                    Efectivo
-                  </label>
-                </div>
-                <div className='custom-control custom-radio custom-control-inline'>
-                  <input
-                    type='radio'
-                    id='credit'
-                    name='payment_type'
-                    value='credit'
-                    checked={paymentSelected === 'credit'}
-                    onChange={handlePaymentChange}
-                    className='custom-control-input'
-                  />
-                  <label className='custom-control-label' htmlFor='credit'>
-                    Crédito
-                  </label>
-                </div>
-              </div>
-              <div className='mb-4'>
-                <label htmlFor='products' className='form-label'>
-                  <b>Agregar Productos: </b>
-                </label>
-                <Select
-                  options={allProducts}
-                  onChange={handleProductSelect}
-                  value={allProducts.filter((option) => {
-                    return option.value === selectedProduct
-                  })}
-                  filterOption={createFilter((...props) => filterFactory(props, allProducts))}
-                  label='Seleccionar...'
-                  placeholder='Buscar por Descripción, Código...'
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='col-md-8 mb-4'>
-          <div className='card'>
-            <div className='card-header'>
-              <strong>
-                <IconListDetails color='black' /> Detalle
-              </strong>
-            </div>
-            <div className='card-body'>
-              {cart.length > 0 ? (
-                <div className='container'>
-                  <div className='mb-4'>
-                    <div className='table-responsive'>
-                      <table className='text-center w-100'>
-                        <thead>
-                          <tr>
-                            <th scope='col'>Cod.</th>
-                            <th scope='col'>Producto</th>
-                            <th scope='col'>Cantidad</th>
-                            <th scope='col'>Precio Unit.</th>
-                            <th scope='col'>Subtotal</th>
-                            <th scope='col'></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {cart.map((item, index) => (
-                            <tr key={item.productId}>
-                              <th scope='row'>{item.productId}</th>
-                              <td className='pl-2'>{item.product}</td>
-                              <td>
-                                <input
-                                  type='number'
-                                  className={`form-control mx-auto amount-small ${
-                                    errors.itemQuantity?.[index]?.quantity ? 'is-invalid' : ''
-                                  }`}
-                                  {...register(`itemQuantity.${index}.quantity`, {
-                                    ...quantityValidations,
-                                    onChange: (e) =>
-                                      handleQuantityChange(
-                                        e.target.value,
-                                        index,
-                                        item.productId
-                                      ),
-                                  })}
-                                />
-                              </td>
-                              <td>{item.price}</td>
-                              <td className='text-right'>{item.subtotal.toFixed(2)}</td>
-                              <td>
-                                <button
-                                  className='btn btn-outline-danger ml-4'
-                                  onClick={() => onRemoveItem(item.productId)}
-                                >
-                                  <IconShoppingCartOff />
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <table className='table float-right w-50 totals-container'>
-                        <tbody>
-                          <tr>
-                            <td className='totals text-right p-2'>SUBTOTAL</td>
-                            <td className='text-right'> L. {totals.toFixed(2)}</td>
-                          </tr>
-                          <tr>
-                            <td className='totals text-right p-2'>ISV</td>
-                            <td className='text-right'> L. {isv.toFixed(2)}</td>
-                          </tr>
-                          <tr>
-                            <td className='totals text-right p-2'>TOTAL</td>
-                            <td className='text-right'> L. {(totals + isv).toFixed(2)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+              <div className='card-body'>
+                <div className='mb-4'>
+                  <div className='custom-control custom-checkbox'>
+                    <input
+                      onChange={handleCheckGeneric}
+                      ref={genericRef}
+                      type='checkbox'
+                      className='custom-control-input'
+                      id='generic'
+                    />
+                    <label className='custom-control-label' htmlFor='generic'>
+                      Factura Completa
+                    </label>
                   </div>
-                  <button
-                    className='btn btn-success float-right'
-                    onClick={onHandleInvoice}
-                    disabled={Object.keys(errors).length > 0}
-                  >
-                    <IconPrinter /> Imprimir
-                  </button>
-                  <button className='btn btn-info mr-2 float-right'>
-                    <IconRestore /> Limpiar
-                  </button>
                 </div>
-              ) : (
-                <Message message='🛒 No hay productos en el carrito...' type={'light'} />
-              )}
+                <div className={`mb-4 ${isGeneric ? 'd-none' : ''}`}>
+                  <label htmlFor='customer' className='form-label'>
+                    <b>Cliente: </b>
+                  </label>
+                  <Select
+                    className='select'
+                    options={allClients}
+                    onChange={handleClientSelect}
+                    value={allClients.filter((option) => {
+                      return option.value === selectedClient
+                    })}
+                    filterOption={createFilter((...props) => filterFactory(props, allClients))}
+                    label='Seleccionar...'
+                    placeholder='Buscar cliente...'
+                  />
+                  <div className={`text-danger ${msgAlert ? '' : 'd-none'}`}>
+                    <small>Cliente es requerido</small>
+                  </div>
+                </div>
+                <div className='mb-4'>
+                  <label htmlFor='payment' className='form-label'>
+                    <b>Pago: </b>
+                  </label>
+                  <br />
+                  <div className='custom-control custom-radio custom-control-inline'>
+                    <input
+                      type='radio'
+                      id='cash'
+                      {...register('paymentType')}
+                      value='cash'
+                      checked={paymentSelected === 'cash'}
+                      onChange={handlePaymentChange}
+                      className='custom-control-input'
+                    />
+                    <label className='custom-control-label' htmlFor='cash'>
+                      Efectivo
+                    </label>
+                  </div>
+                  <div className='custom-control custom-radio custom-control-inline'>
+                    <input
+                      type='radio'
+                      id='credit'
+                      {...register('paymentType')}
+                      value='credit'
+                      checked={paymentSelected === 'credit'}
+                      onChange={handlePaymentChange}
+                      className='custom-control-input'
+                    />
+                    <label className='custom-control-label' htmlFor='credit'>
+                      Crédito
+                    </label>
+                  </div>
+                </div>
+                <div className='mb-4'>
+                  <label htmlFor='products' className='form-label'>
+                    <b>Agregar Productos: </b>
+                  </label>
+                  <Select
+                    options={allProducts}
+                    onChange={handleProductSelect}
+                    value={allProducts.filter((option) => {
+                      return option.value === selectedProduct
+                    })}
+                    filterOption={createFilter((...props) =>
+                      filterFactory(props, allProducts)
+                    )}
+                    label='Seleccionar...'
+                    placeholder='Buscar por Descripción, Código...'
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='col-md-8 mb-4'>
+            <div className='card'>
+              <div className='card-header'>
+                <strong>
+                  <IconListDetails color='black' /> Detalle
+                </strong>
+              </div>
+              <div className='card-body'>
+                {cart.length > 0 ? (
+                  <div className='container'>
+                    <div className='mb-4'>
+                      <div className='table-responsive'>
+                        <table className='text-center w-100'>
+                          <thead>
+                            <tr>
+                              <th scope='col'>Cod.</th>
+                              <th scope='col'>Producto</th>
+                              <th scope='col'>Cantidad</th>
+                              <th scope='col'>Precio Unit.</th>
+                              <th scope='col'>Subtotal</th>
+                              <th scope='col'></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {cart.map((item, index) => (
+                              <tr key={item.productId}>
+                                <th scope='row'>{item.productId}</th>
+                                <td className='pl-2'>{item.product}</td>
+                                <td>
+                                  <input
+                                    type='number'
+                                    className={`form-control mx-auto amount-small ${
+                                      errors.itemQuantity?.[index]?.quantity
+                                        ? 'is-invalid'
+                                        : ''
+                                    }`}
+                                    {...register(`itemQuantity.${index}.quantity`, {
+                                      ...quantityValidations,
+                                      onChange: (e) =>
+                                        handleQuantityChange(
+                                          e.target.value,
+                                          index,
+                                          item.productId
+                                        ),
+                                    })}
+                                  />
+                                </td>
+                                <td>{item.price}</td>
+                                <td className='text-right'>{item.subtotal.toFixed(2)}</td>
+                                <td>
+                                  <button
+                                    className='btn btn-outline-danger ml-4'
+                                    onClick={() => onRemoveItem(item.productId)}
+                                  >
+                                    <IconShoppingCartOff />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <table className='table float-right w-50 totals-container'>
+                          <tbody>
+                            <tr>
+                              <td className='totals text-right p-2'>SUBTOTAL</td>
+                              <td className='text-right'> L. {totals.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                              <td className='totals text-right p-2'>ISV</td>
+                              <td className='text-right'> L. {isv.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                              <td className='totals text-right p-2'>TOTAL</td>
+                              <td className='text-right'> L. {(totals + isv).toFixed(2)}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <button
+                      type='submit'
+                      className='btn btn-success float-right'
+                      disabled={Object.keys(errors).length > 0}
+                    >
+                      <IconPrinter /> Imprimir
+                    </button>
+                    <button className='btn btn-info mr-2 float-right' onClick={onCleanInvoice}>
+                      <IconRestore /> Limpiar
+                    </button>
+                  </div>
+                ) : (
+                  <Message message='🛒 No hay productos en el carrito...' type={'light'} />
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

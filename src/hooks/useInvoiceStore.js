@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { onAddToCart, onDeleteItemInCart, onUpdateCart } from '../store/invoices/invoiceStore'
+import { onAddInvoice, onAddToCart, onCleanCart, onDeleteItemInCart, onUpdateCart } from '../store/invoices/invoiceStore'
+import { saveInvoice } from "../repository/invoiceStorage"
 
 export const useInvoiceStore = () => {
   const { cart, message } = useSelector((state) => state.invoice)
@@ -28,6 +29,17 @@ export const useInvoiceStore = () => {
     dispatch(onDeleteItemInCart(id))
   }
 
+  // Start processing Invoice
+  const startAddingInvoice = (invoice) => {
+    const invoiceGenerated = saveInvoice(invoice)
+    dispatch(onAddInvoice(invoiceGenerated))
+    return true
+  }
+
+  const startRemoveCart = () => {
+    dispatch(onCleanCart())
+  }
+
   return {
     // props
     cart,
@@ -36,6 +48,8 @@ export const useInvoiceStore = () => {
     // methods
     startAddingToCart,
     startUpdatingItemInCart,
-    startDeletingItemInCart
+    startDeletingItemInCart,
+    startAddingInvoice,
+    startRemoveCart
   }
 }

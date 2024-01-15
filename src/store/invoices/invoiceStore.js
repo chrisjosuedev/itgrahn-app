@@ -5,8 +5,6 @@ export const invoiceStore = createSlice({
   initialState: {
     cart: [],
     invoice: [],
-    invoiceDetail: [],
-    message: undefined,
   },
   reducers: {
     onAddToCart: (state, { payload }) => {
@@ -23,10 +21,14 @@ export const invoiceStore = createSlice({
       state.cart = state.cart.filter((item) => item.productId !== payload)
     },
     onAddInvoice: (state, { payload }) => {
-      state.invoice.push(payload.invoice)
-      state.invoiceDetail.push(payload.invoiceDetail)
-    }
+      state.invoice.push(payload)
+      state.cart = []
+    },
+    onCleanCart: (state) => {
+      state.cart = []
+    },
   },
 })
 
-export const { onAddToCart, onUpdateCart, onDeleteItemInCart, onAddInvoice } = invoiceStore.actions
+export const { onAddToCart, onUpdateCart, onDeleteItemInCart, onAddInvoice, onCleanCart } =
+  invoiceStore.actions
