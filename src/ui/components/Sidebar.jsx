@@ -68,9 +68,9 @@ export const Sidebar = () => {
         <div className='nav-option p-2'>
           <NavLink
             className={({ isActive }) => `sidebar-icon ${isActive ? 'active' : ''}`}
-            to={'/analiticas'}
+            to={'/consultas'}
           >
-            <span title='Analíticas'>
+            <span title='Consultas'>
               <IconDeviceAnalytics color='white' />
             </span>
           </NavLink>

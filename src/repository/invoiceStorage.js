@@ -1,4 +1,5 @@
 import { generateId } from '../plugins/id.plugin'
+import { updateProductStock } from './productsStorage'
 
 // Save Invoice
 export const saveInvoice = (invoice) => {
@@ -19,7 +20,13 @@ export const saveInvoice = (invoice) => {
   const allInvoices = findAllInvoices()
   allInvoices.push(newInvoice)
 
+  // Update Stock
+  detail.forEach(({ productId, quantity }) => {
+    updateProductStock(productId, quantity)
+  })
+
   localStorage.setItem('invoices', JSON.stringify(allInvoices))
+
   return newInvoice
 }
 

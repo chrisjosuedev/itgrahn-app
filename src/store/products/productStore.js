@@ -31,6 +31,14 @@ export const productStore = createSlice({
       state.products = state.products.filter((product) => product.id !== state.activeProduct.id)
       state.message = payload
     },
+    onUpdateStock: (state, { payload }) => {
+      payload.forEach((item) => { 
+        state.products = state.products.map((inStore) => {
+          if (inStore.id === item.productId) inStore.stock = inStore.stock - item.quantity
+          return inStore
+        })
+      })
+    },
     onSetActiveProduct: (state, { payload }) => {
       state.activeProduct = payload
     },
@@ -44,11 +52,12 @@ export const productStore = createSlice({
 })
 
 export const {
+  onAddNewProduct,
+  onClearProductMessage,
+  onDeleteProduct,
   onLoadProducts,
   onSetActiveProduct,
-  onAddNewProduct,
-  onDeleteProduct,
   onSetProductMessage,
-  onClearProductMessage,
   onUpdateProduct,
+  onUpdateStock
 } = productStore.actions

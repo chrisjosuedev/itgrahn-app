@@ -56,6 +56,20 @@ export const updateProduct = (product) => {
   return product
 }
 
+/** Update Products Stock */
+export const updateProductStock = (id, quantity) => {
+  const productFound = findByProductId(id)
+  productFound.stock = productFound.stock - quantity
+
+  const getAllProducts = findAllProducts()
+  const products = getAllProducts.map((currentProduct) => {
+    if (currentProduct.id === productFound.id) return productFound
+    return currentProduct
+  })
+
+  localStorage.setItem('products', JSON.stringify(products))
+}
+
 /** Delete Product */
 export const deleteProduct = (id) => {
   const getAllProduct = findAllProducts()

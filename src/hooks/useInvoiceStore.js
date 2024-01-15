@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { onAddInvoice, onAddToCart, onCleanCart, onDeleteItemInCart, onUpdateCart } from '../store/invoices/invoiceStore'
 import { saveInvoice } from "../repository/invoiceStorage"
+import { onUpdateStock } from "../store/products/productStore"
 
 export const useInvoiceStore = () => {
   const { cart, message } = useSelector((state) => state.invoice)
@@ -33,6 +34,7 @@ export const useInvoiceStore = () => {
   const startAddingInvoice = (invoice) => {
     const invoiceGenerated = saveInvoice(invoice)
     dispatch(onAddInvoice(invoiceGenerated))
+    dispatch(onUpdateStock(invoiceGenerated.detail))
     return true
   }
 

@@ -3,8 +3,8 @@ import { AppPage } from "../pages/AppPage";
 import { ClientsPage } from "../pages/ClientsPage";
 import { ProductsPage } from "../pages/ProductsPage";
 import { InvoicesPage } from "../pages/InvoicesPage";
-import { AnaliticsPage } from "../pages/AnaliticsPage";
 import { ApisPage } from "../pages/ApisPage";
+import { ConsultasPage } from "../pages/ConsultasPage";
 
 export const AppRoutes = () => {
   return (
@@ -13,7 +13,7 @@ export const AppRoutes = () => {
       <Route path='/clientes' element={<ClientsPage />} />
       <Route path='/productos' element={<ProductsPage />} />
       <Route path='/facturas' element={<InvoicesPage />} />
-      <Route path='/analiticas' element={<AnaliticsPage />} />
+      <Route path='/consultas' element={<ConsultasPage />} />
       <Route path='/apis' element={<ApisPage />} />
       <Route path='/*' element={<Navigate to={'/'} />} />
     </Routes>

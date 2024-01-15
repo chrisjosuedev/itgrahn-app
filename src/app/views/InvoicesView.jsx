@@ -24,6 +24,7 @@ export const InvoicesView = () => {
     control,
     register,
     setError,
+    reset,
     clearErrors,
     handleSubmit,
     formState: { errors },
@@ -60,7 +61,7 @@ export const InvoicesView = () => {
   // Load items
   useEffect(() => {
     startLoadingProducts()
-  }, [])
+  }, [selectedProduct])
 
   // Load Products
   useEffect(() => {
@@ -77,7 +78,7 @@ export const InvoicesView = () => {
     setSelectedProduct(id)
     const itemSelected = products.find((p) => p.id === id)
     if (itemSelected.stock === 0) {
-      const successInfo = alertSuccess('No hay stock disponible.', 'info')
+      const successInfo = alertSuccess('No hay existencias en inventario', 'info')
       Swal.fire(successInfo)
       return
     }
@@ -97,13 +98,17 @@ export const InvoicesView = () => {
 
   // Handle Quantity Change
   const handleQuantityChange = (value, index, id) => {
+    value = Number(value)
     if (value < 0) return
     const itemInCart = products.find((p) => p.id === id)
     if (itemInCart.stock < value) {
       setError(`root.itemQuantity.${index}.quantity`, {
         type: 'custom',
       })
-      const successInfo = alertSuccess('No hay stock suficiente', 'info')
+      const successInfo = alertSuccess(
+        `No hay stock suficiente: ${itemInCart.stock} en inventario`,
+        'info'
+      )
       Swal.fire(successInfo)
       return
     }
@@ -134,6 +139,7 @@ export const InvoicesView = () => {
     setMsgAlert(false)
     setPaymentSelected('cash')
     startRemoveCart()
+    reset()
   }
 
   // Handle Invoice Process

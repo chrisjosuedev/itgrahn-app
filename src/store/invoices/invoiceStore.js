@@ -13,7 +13,10 @@ export const invoiceStore = createSlice({
     },
     onUpdateCart: (state, { payload }) => {
       state.cart = state.cart.map((item) => {
-        if (item.productId === payload.id) item.subtotal = item.price * payload.value
+        if (item.productId === payload.id) {
+          item.subtotal = item.price * payload.value
+          item.quantity = payload.value
+        }
         return item
       })
     },
