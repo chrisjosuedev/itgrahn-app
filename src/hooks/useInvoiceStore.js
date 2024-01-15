@@ -1,11 +1,35 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { onAddInvoice, onAddToCart, onCleanCart, onDeleteItemInCart, onUpdateCart } from '../store/invoices/invoiceStore'
-import { saveInvoice } from "../repository/invoiceStorage"
-import { onUpdateStock } from "../store/products/productStore"
+import {
+  onAddInvoice,
+  onAddToCart,
+  onCleanCart,
+  onDeleteItemInCart,
+  onLoadInvoices,
+  onSetActiveInvoice,
+  onSetInvoiceDetail,
+  onUpdateCart,
+} from '../store/invoices/invoiceStore'
+import { getAllInvoices, getInvoiceDetailById, saveInvoice } from '../repository/invoiceStorage'
+import { onUpdateStock } from '../store/products/productStore'
 
 export const useInvoiceStore = () => {
-  const { cart, message } = useSelector((state) => state.invoice)
+  const { cart, invoiceDetail, activeInvoice, allInvoices, isLoadingInvoices } = useSelector(
+    (state) => state.invoice
+  )
   const dispatch = useDispatch()
+
+  // Start Loading Invoices
+  const startLoadingInvoices = () => {
+    const allInvoices = getAllInvoices()
+    dispatch(onLoadInvoices(allInvoices))
+  }
+
+  // Start Finding Invoice Detail
+  const startFindingInvoice = (id) => {
+    const details = getInvoiceDetailById(id)
+    dispatch(onSetActiveInvoice(id))
+    dispatch(onSetInvoiceDetail(details))
+  }
 
   // Start Updating in Set Active
   const startUpdatingItemInCart = (id, value) => {
@@ -38,6 +62,7 @@ export const useInvoiceStore = () => {
     return true
   }
 
+  // Remove All Cart
   const startRemoveCart = () => {
     dispatch(onCleanCart())
   }
@@ -45,13 +70,18 @@ export const useInvoiceStore = () => {
   return {
     // props
     cart,
-    message,
+    allInvoices,
+    isLoadingInvoices,
+    invoiceDetail,
+    activeInvoice,
 
     // methods
     startAddingToCart,
     startUpdatingItemInCart,
     startDeletingItemInCart,
     startAddingInvoice,
-    startRemoveCart
+    startRemoveCart,
+    startLoadingInvoices,
+    startFindingInvoice,
   }
 }

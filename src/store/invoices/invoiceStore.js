@@ -5,6 +5,10 @@ export const invoiceStore = createSlice({
   initialState: {
     cart: [],
     invoices: [],
+    allInvoices: [],
+    invoiceDetail: [],
+    activeInvoice: null,
+    isLoadingInvoices: true,
   },
   reducers: {
     onAddToCart: (state, { payload }) => {
@@ -30,8 +34,31 @@ export const invoiceStore = createSlice({
     onCleanCart: (state) => {
       state.cart = []
     },
+    onLoadInvoices: (state, { payload }) => {
+      payload.forEach((invoice) => {
+        const exists = state.allInvoices.some(
+          (invoiceInStore) => invoiceInStore.id === invoice.id
+        )
+        if (!exists) state.allInvoices.push(invoice)
+      })
+      state.isLoadingInvoices = false
+    },
+    onSetActiveInvoice: (state, { payload }) => {
+      state.activeInvoice = state.allInvoices.find((invoice) => invoice.id === payload)
+    },
+    onSetInvoiceDetail: (state, { payload }) => {
+      state.invoiceDetail = payload
+    },
   },
 })
 
-export const { onAddToCart, onUpdateCart, onDeleteItemInCart, onAddInvoice, onCleanCart } =
-  invoiceStore.actions
+export const {
+  onAddToCart,
+  onUpdateCart,
+  onDeleteItemInCart,
+  onAddInvoice,
+  onCleanCart,
+  onLoadInvoices,
+  onSetActiveInvoice,
+  onSetInvoiceDetail
+} = invoiceStore.actions

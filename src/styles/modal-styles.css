@@ -45,3 +45,7 @@
   outline: none;
   padding: 10px;
 }
+
+.invoice-modal {
+  max-width: 60%;
+}
