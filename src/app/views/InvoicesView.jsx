@@ -37,8 +37,6 @@ export const InvoicesView = () => {
     name: 'itemQuantity',
   })
 
-  const [isGeneric, setIsGeneric] = useState(true)
-
   const { products, startLoadingProducts } = useProductStore()
   const { clients, startLoadingClients } = useClientStore()
   const { cart, startAddingToCart, startUpdatingItemInCart, startDeletingItemInCart } =
@@ -46,6 +44,9 @@ export const InvoicesView = () => {
 
   const [selectedProduct, setSelecteditem] = useState('')
   const [selectedClient, setSelectedClient] = useState('')
+  const [isGeneric, setIsGeneric] = useState(true)
+  const [msgAlert, setMsgAlert] = useState(false)
+  const [paymentSelected, setPaymenteSelected] = useState('cash')
 
   // Load items
   useEffect(() => {
@@ -86,7 +87,7 @@ export const InvoicesView = () => {
   }
 
   // Handle Quantity Change
-  const handleQuantityChange = (value, index, id) => {   
+  const handleQuantityChange = (value, index, id) => {
     if (value < 0) return
     const itemInCart = products.find((p) => p.id === id)
     if (itemInCart.stock < value) {
@@ -100,6 +101,27 @@ export const InvoicesView = () => {
     // set active
     startUpdatingItemInCart(id, value)
     clearErrors()
+  }
+
+  // Handle Payment Change
+  const handlePaymentChange = (e) => {
+    setPaymenteSelected(e.target.value)
+  }
+
+  // Handle Checkbox
+  const handleCheckGeneric = () => {
+    setIsGeneric(!isGeneric)
+    if (!isGeneric) setSelectedClient('')
+  }
+
+  // Handle Invoice Process
+  const onHandleInvoice = () => {
+    console.log('print...', paymentSelected, isGeneric)
+    if (!selectedClient) {
+      setMsgAlert(true)
+      return
+    }
+    setMsgAlert(false)
   }
 
   // Reformat products to Select
@@ -162,7 +184,7 @@ export const InvoicesView = () => {
               <div className='mb-4'>
                 <div className='custom-control custom-checkbox'>
                   <input
-                    onChange={() => setIsGeneric(!isGeneric)}
+                    onChange={handleCheckGeneric}
                     type='checkbox'
                     className='custom-control-input'
                     id='customCheck1'
@@ -187,6 +209,9 @@ export const InvoicesView = () => {
                   label='Seleccionar...'
                   placeholder='Buscar cliente...'
                 />
+                <div className={`text-danger ${msgAlert ? '' : 'd-none'}`}>
+                  <small>Cliente es requerido</small>
+                </div>
               </div>
               <div className='mb-4'>
                 <label htmlFor='payment' className='form-label'>
@@ -198,6 +223,9 @@ export const InvoicesView = () => {
                     type='radio'
                     id='cash'
                     name='payment_type'
+                    value='cash'
+                    checked={paymentSelected === 'cash'}
+                    onChange={handlePaymentChange}
                     className='custom-control-input'
                   />
                   <label className='custom-control-label' htmlFor='cash'>
@@ -209,6 +237,9 @@ export const InvoicesView = () => {
                     type='radio'
                     id='credit'
                     name='payment_type'
+                    value='credit'
+                    checked={paymentSelected === 'credit'}
+                    onChange={handlePaymentChange}
                     className='custom-control-input'
                   />
                   <label className='custom-control-label' htmlFor='credit'>
@@ -313,6 +344,7 @@ export const InvoicesView = () => {
                   </div>
                   <button
                     className='btn btn-success float-right'
+                    onClick={onHandleInvoice}
                     disabled={Object.keys(errors).length > 0}
                   >
                     <IconPrinter /> Imprimir
