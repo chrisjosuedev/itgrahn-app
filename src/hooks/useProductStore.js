@@ -15,7 +15,6 @@ import {
   onSetProductMessage,
   onUpdateProduct,
 } from '../store/products/productStore'
-import { onDeleteClient } from '../store/clients/clientStore'
 
 export const useProductStore = () => {
   const { activeProduct, products, isLoadingProducts, message } = useSelector(
