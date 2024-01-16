@@ -3,6 +3,7 @@ import {
   IconApi,
   IconBrandSuperhuman,
   IconDeviceAnalytics,
+  IconHome2,
   IconPower,
   IconShoppingCart,
   IconUser,
@@ -35,6 +36,17 @@ export const Sidebar = () => {
           isSmallDevice ? 'small-device-icon' : ''
         } sidebar-container bg-dark pt-4`}
       >
+        {' '}
+        <div className='nav-option p-2'>
+          <NavLink
+            className={({ isActive }) => `sidebar-icon ${isActive ? 'active' : ''}`}
+            to={'/'}
+          >
+            <span title='Dashboard'>
+              <IconHome2 color='white' />
+            </span>
+          </NavLink>
+        </div>
         <div className='nav-option p-2'>
           <NavLink
             className={({ isActive }) => `sidebar-icon ${isActive ? 'active' : ''}`}

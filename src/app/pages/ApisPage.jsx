@@ -1,5 +1,5 @@
 import { AppLayout } from "../layout/AppLayout"
-import { ApisView } from "../views/ApisViews"
+import { ApisView } from "../views/ApisView"
 
 export const ApisPage = () => {
   return (

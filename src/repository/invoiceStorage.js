@@ -1,7 +1,10 @@
+import { getEnvVariables } from '../helpers/getEnvVariables'
 import { formatDate } from '../plugins/dateFormatter.plugin'
 import { generateId } from '../plugins/id.plugin'
 import { findByRtn } from './clientsStorage'
 import { findByProductId, updateProductStock } from './productsStorage'
+
+const { VITE_ISV: ISV } = getEnvVariables()
 
 // Save Invoice
 export const saveInvoice = (invoice) => {
@@ -70,4 +73,29 @@ export const getInvoiceDetailById = (id) => {
       }
     })
   return detailsByInvoice
+}
+
+// Get total by Payment Method
+export const getAmountByPaymentType = (type) => {
+  const invoicesInStorage = findAllInvoices()
+
+  const amount = invoicesInStorage
+    .filter((invoice) => invoice.payment === type)
+    .map((item) => item.detail.reduce((prev, curr) => prev + curr.subtotal, 0))
+    .reduce((prev, curr) => prev + curr, 0)
+
+  return amount
+}
+
+// Find Credit/Cash Total
+export const getAllAmountPaymentType = () => {
+  const cashNet = getAmountByPaymentType(true)
+  const creditNet = getAmountByPaymentType(false)
+
+  if (cashNet === 0 && creditNet === 0) return null
+
+  return {
+    cash: cashNet * ISV + cashNet,
+    credit: creditNet * ISV + creditNet,
+  }
 }
