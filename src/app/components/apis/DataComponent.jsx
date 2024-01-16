@@ -10,14 +10,14 @@ export const DataComponent = ({
   onUpdate,
 }) => {
   return (
-    <div className='card col-md-2 m-2 text-center'>
+    <div className='card col-md-2 col-sm-4 col-lg-2 m-2 text-center'>
       <img className='card-img-top' src={avatar} alt={`avatar-${email}`} />
       <div className='card-body'>
         <h5 className='card-title'>{`${firstName} ${lastName}`}</h5>
         <small className='text-muted'>{email}</small>
       </div>
       <div className='card-footer w-100'>
-        <button onClick={() => onUpdate(id, firstName, lastName)} className='btn btn-dark btn-sm mr-2'>
+        <button onClick={() => onUpdate(id, firstName, lastName)} className='btn btn-dark btn-sm'>
           <IconEdit color='white' />
         </button>
         <button

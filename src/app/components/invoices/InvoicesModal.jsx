@@ -50,59 +50,60 @@ export const InvoicesModal = () => {
             <IconX color='black' />
           </button>
         </div>
+        <div className='table-responsive'>
+          <div className='modal-body'>
+            <div className='row mb-4'>
+              <div className='col-md-6'>
+                <b>Código:</b> <br /> {activeInvoice?.id}
+              </div>
+              <div className='col-md-6'>
+                <b>Fecha: </b> {activeInvoice?.date}
+              </div>
+            </div>
+            <div className='row mb-4'>
+              <div className='col-md-6'>
+                <b>Cliente: </b> {activeInvoice?.customer}
+              </div>
+              <div className='col-md-6'>
+                <b>Tipo: </b> {activeInvoice?.payment}
+              </div>
+            </div>
 
-        <div className='modal-body animate__animated animate__fadeIn'>
-          <div className='row mb-4'>
-            <div className='col-md-6'>
-              <b>Código:</b> <br /> {activeInvoice?.id}
-            </div>
-            <div className='col-md-6'>
-              <b>Fecha: </b> {activeInvoice?.date}
-            </div>
-          </div>
-          <div className='row mb-4'>
-            <div className='col-md-6'>
-              <b>Cliente: </b> {activeInvoice?.customer}
-            </div>
-            <div className='col-md-6'>
-              <b>Tipo: </b> {activeInvoice?.payment}
-            </div>
-          </div>
-
-          <div className='row'>
-            <div className='col-md-12'>
-              <table className='table table-bordered w-100'>
-                <thead>
-                  <tr>
-                    <th scope='col'>Producto</th>
-                    <th scope='col'>Cant.</th>
-                    <th scope='col'>Precio</th>
-                    <th scope='col'>Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {invoiceDetail.map((detail, i) => (
-                    <tr key={i}>
-                      <td className='text-left'>{detail.product ?? 'Descontinuado'}</td>
-                      <td className='text-left'>{detail.quantity}</td>
-                      <td className='text-left'>L. {detail.price.toFixed(2)}</td>
-                      <td className='text-left'>L. {detail.subtotal.toFixed(2)}</td>
+            <div className='row'>
+              <div className='col-md-12'>
+                <table className='table table-bordered w-100'>
+                  <thead>
+                    <tr>
+                      <th scope='col'>Producto</th>
+                      <th scope='col'>Cant.</th>
+                      <th scope='col'>Precio</th>
+                      <th scope='col'>Subtotal</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {invoiceDetail.map((detail, i) => (
+                      <tr key={i}>
+                        <td className='text-left'>{detail.product ?? 'Descontinuado'}</td>
+                        <td className='text-left'>{detail.quantity}</td>
+                        <td className='text-left'>L. {detail.price.toFixed(2)}</td>
+                        <td className='text-left'>L. {detail.subtotal.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-          <div className='row'>
-            <div className='col-md-12 text-right p-4'>
-              <div>
-                <b>Subtotal: L.</b> <span className='p-2'>{totals.toFixed(2)}</span>
-              </div>
-              <div>
-                <b>ISV: L.</b> <span className='p-2'>{isv.toFixed(2)}</span>
-              </div>
-              <div>
-                <b>Total: L.</b> <span className='p-2'>{(totals + isv).toFixed(2)}</span>
+            <div className='row'>
+              <div className='col-md-12 text-right p-4'>
+                <div>
+                  <b>Subtotal: L.</b> <span className='p-2'>{totals.toFixed(2)}</span>
+                </div>
+                <div>
+                  <b>ISV: L.</b> <span className='p-2'>{isv.toFixed(2)}</span>
+                </div>
+                <div>
+                  <b>Total: L.</b> <span className='p-2'>{(totals + isv).toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>
