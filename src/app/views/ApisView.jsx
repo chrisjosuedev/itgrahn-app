@@ -117,7 +117,7 @@ export const ApisView = () => {
           prev.map((user) => {
             if (user.id === id) {
               user.first_name = name.trim().split(' ')[0]
-              user.last_name = name.trim().split(' ')[1]
+              user.last_name = name.trim().split(' ')[1] ?? ''
             }
             return user
           })
