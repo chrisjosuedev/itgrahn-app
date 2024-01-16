@@ -9,7 +9,10 @@ export const dataStore = createSlice({
     onAddPaymentAnalitica: (state, { payload }) => {
       state.paymentAnalitica = payload
     },
+    onLogoutData: (state) => {
+      state.paymentAnalitica = undefined
+    },
   },
 })
 
-export const { onAddPaymentAnalitica } = dataStore.actions
+export const { onAddPaymentAnalitica, onLogoutData } = dataStore.actions

@@ -40,6 +40,12 @@ export const clientStore = createSlice({
     onClearClientMessage: (state) => {
       state.message = undefined
     },
+    onLogoutClient: (state) => {
+      state.activeClient = null
+      state.clients = []
+      state.isLoadingClients = true
+      state.message = undefined
+    },
   },
 })
 
@@ -51,4 +57,5 @@ export const {
   onClearClientMessage,
   onLoadClients,
   onUpdateClient,
+  onLogoutClient,
 } = clientStore.actions

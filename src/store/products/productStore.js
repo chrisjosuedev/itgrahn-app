@@ -28,11 +28,13 @@ export const productStore = createSlice({
       state.message = payload.message
     },
     onDeleteProduct: (state, { payload }) => {
-      state.products = state.products.filter((product) => product.id !== state.activeProduct.id)
+      state.products = state.products.filter(
+        (product) => product.id !== state.activeProduct.id
+      )
       state.message = payload
     },
     onUpdateStock: (state, { payload }) => {
-      payload.forEach((item) => { 
+      payload.forEach((item) => {
         state.products = state.products.map((inStore) => {
           if (inStore.id === item.productId) inStore.stock = inStore.stock - item.quantity
           return inStore
@@ -48,6 +50,12 @@ export const productStore = createSlice({
     onClearProductMessage: (state) => {
       state.message = undefined
     },
+    onLogoutProducts: (state) => {
+      state.activeProduct = null
+      state.products = []
+      state.isLoadingProducts = true
+      state.message = undefined
+    },
   },
 })
 
@@ -59,5 +67,6 @@ export const {
   onSetActiveProduct,
   onSetProductMessage,
   onUpdateProduct,
-  onUpdateStock
+  onUpdateStock,
+  onLogoutProducts,
 } = productStore.actions

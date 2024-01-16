@@ -49,6 +49,14 @@ export const invoiceStore = createSlice({
     onSetInvoiceDetail: (state, { payload }) => {
       state.invoiceDetail = payload
     },
+    onLogoutInvoices: (state) => {
+      state.cart = []
+      state.invoices = []
+      state.allInvoices = []
+      state.invoiceDetail = []
+      state.activeInvoice = null
+      state.isLoadingInvoices = true
+    },
   },
 })
 
@@ -60,5 +68,6 @@ export const {
   onCleanCart,
   onLoadInvoices,
   onSetActiveInvoice,
-  onSetInvoiceDetail
+  onSetInvoiceDetail,
+  onLogoutInvoices,
 } = invoiceStore.actions

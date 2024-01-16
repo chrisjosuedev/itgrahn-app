@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import Swal from 'sweetalert2'
 import {
   IconApi,
   IconBrandSuperhuman,
@@ -10,9 +11,13 @@ import {
 } from '@tabler/icons-react'
 import { useUiStore } from '../../hooks/useUiStore'
 import { NavLink } from 'react-router-dom'
+import { alertInfo } from '../../helpers/SweetAlertProps'
+import { useAuthStore } from '../../hooks/useAuthStore'
 
 export const Sidebar = () => {
   const { isSmallDevice, startSetDevice } = useUiStore()
+  const { startLogout } = useAuthStore()
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,7 +31,10 @@ export const Sidebar = () => {
   }, [isSmallDevice])
 
   const onLogout = () => {
-    console.log('Logout...')
+    const logoutInfo = alertInfo('¿Seguro que desear cerrar sesión?', 'info', 'Salir')
+    Swal.fire(logoutInfo).then((result) => {
+      if (result.isConfirmed) return startLogout()
+    })
   }
 
   return (

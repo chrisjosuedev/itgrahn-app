@@ -83,7 +83,7 @@ export const InvoicesModal = () => {
                 <tbody>
                   {invoiceDetail.map((detail, i) => (
                     <tr key={i}>
-                      <td className='text-left'>{detail.product}</td>
+                      <td className='text-left'>{detail.product ?? 'Descontinuado'}</td>
                       <td className='text-left'>{detail.quantity}</td>
                       <td className='text-left'>L. {detail.price.toFixed(2)}</td>
                       <td className='text-left'>L. {detail.subtotal.toFixed(2)}</td>
