@@ -1,10 +1,9 @@
 import { IconMenu2 } from '@tabler/icons-react'
 import { Link } from 'react-router-dom'
-import { useUiStore } from "../../hooks/useUiStore"
-import { useAuthStore } from "../../hooks/useAuthStore"
+import { useUiStore } from '../../hooks/useUiStore'
+import { useAuthStore } from '../../hooks/useAuthStore'
 
 export const Navbar = () => {
-
   const { isSmallDevice, startSetDevice } = useUiStore()
   const { user } = useAuthStore()
 
@@ -21,7 +20,11 @@ export const Navbar = () => {
           Online: <span className='text-success'>{user.username}</span>
         </li>
       </ul>
-      <span onClick={() => startSetDevice(!isSmallDevice)} className='sidebar-icon small-device-icon' title='Collapse'>
+      <span
+        onClick={() => startSetDevice(!isSmallDevice)}
+        className='sidebar-icon small-device-icon'
+        title='Collapse'
+      >
         <IconMenu2 color='white' />
       </span>
     </nav>

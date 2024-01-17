@@ -1,4 +1,4 @@
-import { Navbar } from '../../ui/components/NavBar'
+import { Navbar } from "../../ui/components/Navbar"
 import { Sidebar } from '../../ui/components/Sidebar'
 
 export const AppLayout = ({ children }) => {
