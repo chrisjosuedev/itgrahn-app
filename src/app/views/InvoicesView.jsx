@@ -34,7 +34,7 @@ export const InvoicesView = () => {
       itemQuantity: [],
     },
   })
-  const { append } = useFieldArray({
+  const { append, remove } = useFieldArray({
     control,
     name: 'itemQuantity',
   })
@@ -92,8 +92,9 @@ export const InvoicesView = () => {
   }
 
   // Remove Item
-  const onRemoveItem = (id) => {
+  const onRemoveItem = (id, index) => {
     startDeletingItemInCart(id)
+    remove(index)
   }
 
   // Handle Quantity Change
@@ -365,7 +366,7 @@ export const InvoicesView = () => {
                                 <td>
                                   <button
                                     className='btn btn-outline-danger ml-4'
-                                    onClick={() => onRemoveItem(item.productId)}
+                                    onClick={() => onRemoveItem(item.productId, index)}
                                   >
                                     <IconShoppingCartOff />
                                   </button>
