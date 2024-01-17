@@ -26,8 +26,7 @@ Antes de iniciar, debe tener:
 
 ## 🛠 Run
 1. Instalar de módulos de node: `npm install`
-2. Ejecutar en modo de desarrollo: `npm run dev`
-3. Generar build de producción: `npm run build`
+2. Ejecutar la applicación: `npm run dev`
 
 ## 🦀 Technologies
 ![Reactjs](https://img.shields.io/badge/react-js-blue)
